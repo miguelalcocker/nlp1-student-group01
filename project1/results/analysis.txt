@@ -1,0 +1,179 @@
+
+=== Q2: tokeniser, tuning-set accuracy, one fit per setting
+     arch kind  lowercase  vocab  accuracy  train_accuracy
+loglinear  bpe      False    250    0.4687          0.4722
+loglinear  bpe      False   1000    0.5222          0.5272
+loglinear  bpe      False   5000    0.5439          0.5686
+loglinear  bpe      False  10000    0.5408          0.5891
+loglinear  bpe      False  30000    0.5289          0.6337
+loglinear  bpe       True   1000    0.5218          0.5279
+loglinear  bpe       True  10000    0.5401          0.5816
+loglinear word      False   1000    0.5226          0.5295
+loglinear word      False  10000    0.5434          0.5896
+      mlp  bpe      False   1000    0.6218          0.7662
+      mlp  bpe      False   2000    0.6224          0.8136
+      mlp  bpe      False   5000    0.6078          0.7936
+      mlp  bpe      False  10000    0.5966          0.7566
+      mlp  bpe      False  30000    0.5880          0.7492
+  siamese  bpe      False   1000    0.6431          0.7242
+  siamese  bpe      False   2000    0.6531          0.7898
+  siamese  bpe      False   5000    0.6501          0.7866
+
+=== Q3: representations, CV accuracy (%), mean and SD of 15 fits
+                       mean   std
+rep        arch                  
+and        loglinear  44.00  0.09
+           mlp        44.37  0.11
+bow        loglinear  53.04  0.19
+           mlp        61.15  0.24
+bow-concat loglinear  45.57  0.15
+           mlp        52.25  0.28
+hyp-and    loglinear  61.83  0.18
+           mlp        62.50  0.17
+hyp-only   loglinear  52.28  0.16
+           mlp        53.75  0.19
+overlap    loglinear  61.87  0.17
+           mlp        63.38  0.21
+
+Alternatives, tuning-set accuracy and train accuracy, one fit
+            accuracy         train_accuracy        
+arch       loglinear     mlp      loglinear     mlp
+rep                                                
+bow           0.5369  0.6199         0.5472  0.8142
+bow-concat    0.4629  0.5336         0.4648  0.6861
+cross         0.5169  0.5902         0.9989  0.9006
+ind           0.5366  0.6250         0.5492  0.8310
+overlap       0.6250  0.6438         0.6372  0.7343
+tfidf         0.5388  0.6326         0.5488  0.8248
+
+=== Q4: search on the tuning set, mean change in pp over 6 neural systems
+hidden 128   -0.59   per system: [-1.06, -0.57, -0.58, -1.13, 0.19, -0.38]
+dropout 0.1  -0.36   per system: [-0.56, -0.02, -0.07, -0.73, -0.21, -0.56]
+dropout 0.5  +0.14   per system: [0.02, 0.33, 0.41, 0.01, 0.16, -0.09]
+GELU         -0.60   per system: [-1.96, -0.04, -1.35, -0.01, -0.13, -0.12]
+tanh         -3.71   per system: [-8.69, -1.07, -7.53, -1.42, -2.23, -1.29]
+lr 1e-4      -0.11
+wd 0.1       -0.11
+2 layers     -1.19   3 MLPs
+
+Log-linear C:
+rep             bow     ind  overlap
+params                              
+{"C": 0.01}  0.5347  0.5344   0.6161
+{"C": 0.03}  0.5376  0.5369   0.6217
+{"C": 0.1}   0.5376  0.5368   0.6243
+{"C": 0.3}   0.5368  0.5369   0.6249
+{"C": 1.0}   0.5371  0.5366   0.6251
+{"C": 3.0}   0.5366  0.5366   0.6247
+
+First guess (lr 1e-3, wd 1e-4) against chosen (lr 3e-4, wd 0.3):
+bow      mlp      60.47 62.09
+bow      siamese  64.99 65.23
+overlap  siamese  65.49 66.25
+
+=== Q5: CV accuracy (%), random against premise split, seed 0, 5 folds
+                     random  random_sd  premise
+rep       arch                                 
+bow       loglinear   52.00       0.21    53.03
+          mlp         53.88       0.14    61.15
+hyp-only  loglinear   51.93       0.17    52.27
+          mlp         52.60       0.22    53.70
+prem-only loglinear   26.95       0.12    33.33
+          mlp         31.07       0.68    33.33
+
+Max |macro-F1 - accuracy| in the grid (pp): any single fit 0.26 , means of 15 fits 0.11
+Early stopping on the fold, not the tuning set, mean change (pp): -0.01
+Hypothesis-only share of the best gain over chance: 64.8%
+
+Validation sets, overlap/siamese, 15 models
+matched: single 64.40 (SD 0.33), vote 65.82, macro-F1 65.73, n 9815
+  recall {'E': 69.39, 'N': 64.68, 'C': 63.06}
+  genres {'fiction': 64.88, 'government': 69.05, 'slate': 61.23, 'telephone': 68.01, 'travel': 65.94}
+mismatched: single 65.04 (SD 0.45), vote 66.33, macro-F1 66.23, n 9832
+  recall {'E': 71.47, 'N': 63.63, 'C': 63.46}
+  genres {'facetoface': 66.41, 'letters': 70.16, 'nineeleven': 65.05, 'oup': 65.58, 'verbatim': 64.44}
+
+Validation sets, hyp-only/mlp, 15 models
+matched: single 53.33 (SD 0.25), vote 54.04, macro-F1 54.04, n 9815
+  recall {'E': 54.93, 'N': 50.24, 'C': 56.77}
+  genres {'fiction': 53.12, 'government': 57.02, 'slate': 50.38, 'telephone': 53.05, 'travel': 56.63}
+mismatched: single 52.77 (SD 0.31), vote 53.34, macro-F1 53.52, n 9832
+  recall {'E': 51.08, 'N': 53.15, 'C': 55.93}
+  genres {'facetoface': 51.37, 'letters': 56.04, 'nineeleven': 51.82, 'oup': 54.92, 'verbatim': 52.52}
+
+=== Q6: CV accuracy (%) and NLL, mean of 15 fits
+
+accuracy, mean
+ arch     loglinear     mlp  siamese
+rep                                
+ind         53.138  61.336   64.005
+bow         53.035  61.150   63.929
+overlap     61.871  63.379   64.853
+accuracy, SD over fits
+ arch     loglinear    mlp  siamese
+rep                               
+ind          0.172  0.158    0.290
+bow          0.186  0.244    0.323
+overlap      0.174  0.206    0.207
+
+NLL, mean
+ arch     loglinear    mlp  siamese
+rep                               
+ind          0.972  0.860    0.816
+bow          0.973  0.864    0.820
+overlap      0.862  0.826    0.800
+NLL, SD over fits
+ arch     loglinear    mlp  siamese
+rep                               
+ind          0.002  0.003    0.003
+bow          0.002  0.003    0.003
+overlap      0.002  0.003    0.003
+
+SD between the 3 CV repetitions (pp)
+ arch     loglinear    mlp  siamese
+rep                               
+bow          0.004  0.119    0.038
+ind          0.028  0.041    0.045
+overlap      0.010  0.008    0.050
+
+All pairs: gain of b over a (pp), 95% interval, P(a), P(tie), P(b), verdict at ROPE 0.5, 1, 2 pp
+ind/loglinear        ind/mlp               +8.20 [ +7.98,  +8.42] 0.000 0.000 1.000  B B B
+ind/loglinear        ind/siamese          +10.87 [+10.51, +11.23] 0.000 0.000 1.000  B B B
+ind/loglinear        bow/loglinear         -0.10 [ -0.20,  -0.01] 0.000 1.000 0.000  tie tie tie
+ind/loglinear        bow/mlp               +8.01 [ +7.75,  +8.27] 0.000 0.000 1.000  B B B
+ind/loglinear        bow/siamese          +10.79 [+10.43, +11.15] 0.000 0.000 1.000  B B B
+ind/loglinear        overlap/loglinear     +8.73 [ +8.57,  +8.89] 0.000 0.000 1.000  B B B
+ind/loglinear        overlap/mlp          +10.24 [+10.05, +10.43] 0.000 0.000 1.000  B B B
+ind/loglinear        overlap/siamese      +11.71 [+11.53, +11.90] 0.000 0.000 1.000  B B B
+ind/mlp              ind/siamese           +2.67 [ +2.32,  +3.02] 0.000 0.000 1.000  B B B
+ind/mlp              bow/loglinear         -8.30 [ -8.51,  -8.09] 1.000 0.000 0.000  A A A
+ind/mlp              bow/mlp               -0.19 [ -0.41,  +0.04] 0.000 1.000 0.000  tie tie tie
+ind/mlp              bow/siamese           +2.59 [ +2.20,  +2.99] 0.000 0.000 1.000  B B B
+ind/mlp              overlap/loglinear     +0.53 [ +0.33,  +0.74] 0.000 1.000 0.000  undecided tie tie
+ind/mlp              overlap/mlp           +2.04 [ +1.76,  +2.32] 0.000 0.000 1.000  B B undecided
+ind/mlp              overlap/siamese       +3.52 [ +3.23,  +3.81] 0.000 0.000 1.000  B B B
+ind/siamese          bow/loglinear        -10.97 [-11.29, -10.65] 1.000 0.000 0.000  A A A
+ind/siamese          bow/mlp               -2.86 [ -3.27,  -2.44] 1.000 0.000 0.000  A A A
+ind/siamese          bow/siamese           -0.08 [ -0.43,  +0.28] 0.000 1.000 0.000  tie tie tie
+ind/siamese          overlap/loglinear     -2.13 [ -2.49,  -1.78] 1.000 0.000 0.000  A A undecided
+ind/siamese          overlap/mlp           -0.63 [ -1.02,  -0.24] 0.030 0.970 0.000  undecided tie tie
+ind/siamese          overlap/siamese       +0.85 [ +0.53,  +1.16] 0.000 0.841 0.159  B undecided tie
+bow/loglinear        bow/mlp               +8.11 [ +7.86,  +8.37] 0.000 0.000 1.000  B B B
+bow/loglinear        bow/siamese          +10.89 [+10.53, +11.26] 0.000 0.000 1.000  B B B
+bow/loglinear        overlap/loglinear     +8.84 [ +8.67,  +9.00] 0.000 0.000 1.000  B B B
+bow/loglinear        overlap/mlp          +10.34 [+10.10, +10.59] 0.000 0.000 1.000  B B B
+bow/loglinear        overlap/siamese      +11.82 [+11.61, +12.03] 0.000 0.000 1.000  B B B
+bow/mlp              bow/siamese           +2.78 [ +2.39,  +3.17] 0.000 0.000 1.000  B B B
+bow/mlp              overlap/loglinear     +0.72 [ +0.41,  +1.03] 0.000 0.964 0.036  undecided tie tie
+bow/mlp              overlap/mlp           +2.23 [ +1.91,  +2.55] 0.000 0.000 1.000  B B undecided
+bow/mlp              overlap/siamese       +3.70 [ +3.43,  +3.98] 0.000 0.000 1.000  B B B
+bow/siamese          overlap/loglinear     -2.06 [ -2.44,  -1.68] 1.000 0.000 0.000  A A undecided
+bow/siamese          overlap/mlp           -0.55 [ -0.86,  -0.24] 0.004 0.996 0.000  undecided tie tie
+bow/siamese          overlap/siamese       +0.92 [ +0.60,  +1.24] 0.000 0.691 0.309  B undecided tie
+overlap/loglinear    overlap/mlp           +1.51 [ +1.29,  +1.73] 0.000 0.000 1.000  B B tie
+overlap/loglinear    overlap/siamese       +2.98 [ +2.73,  +3.24] 0.000 0.000 1.000  B B B
+overlap/mlp          overlap/siamese       +1.47 [ +1.27,  +1.67] 0.000 0.000 1.000  B B tie
+
+At 1 pp: {'A': 5, 'B': 22, 'tie': 7, 'undecided': 2}
+At 0.5 pp, 6 verdicts change
+At 2.0 pp, 8 verdicts change

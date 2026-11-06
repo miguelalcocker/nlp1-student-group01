@@ -1,0 +1,15 @@
+[project]
+name = "nlp1-project1"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = [
+    "baycomp>=1.0.3",
+    "datasets>=5.1.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.4",
+    "pandas>=3.1.0",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+    "tokenizers>=0.23.3",
+    "torch>=2.14.1",
+]

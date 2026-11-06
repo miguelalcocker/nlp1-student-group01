@@ -1,0 +1,49 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=== Corpus
+{'train': 392702, 'validation_matched': 9815, 'validation_mismatched': 9832} pool 353343 tuning 39359
+premises 128107 pairs per premise 3.07
+labels {0: 130899, 1: 130900, 2: 130903}
+mean words premise, hypothesis 19.8 10.0
+genres {'train': ['fiction', 'government', 'slate', 'telephone', 'travel'], 'validation_matched': ['fiction', 'government', 'slate', 'telephone', 'travel'], 'validation_mismatched': ['facetoface', 'letters', 'nineeleven', 'oup', 'verbatim']}
+
+=== Tokeniser data
+unique premises 115349 hypotheses 353343
+running words 5805605 word types 179122
+validation_matched [UNK] share of tokens 0.0
+validation_mismatched [UNK] share of tokens 9.007808e-06
+
+=== Tokeniser refit inside each fold: log-linear BoW accuracy, global against per-fold
+0.5316 0.5315
+0.5336 0.5324
+0.5282 0.528
+0.5299 0.53
+0.5282 0.5281
+mean change (pp) -0.032
+
+=== Weights for contradiction: log-linear, BoW + overlap, 5 folds
+▁never hypothesis, overlap, mean [ 2.1  -2.47] SD [0.02 0.03] sum -0.37
+▁no hypothesis, overlap, mean [ 1.77 -1.76] SD [0.01 0.02] sum 0.01
+▁not hypothesis, overlap, mean [ 0.89 -1.13] SD [0.01 0.02] sum -0.24
+
+=== Shared tokens per pair, CV pool
+entailment mean 10.31 SD 6.81
+neutral mean 7.4 SD 5.33
+contradiction mean 7.59 SD 5.49
+
+=== Parameters
+bow log-linear 12003 {'mlp': 2050051, 'siamese': 2074627}
+overlap log-linear 18003 {'mlp': 3074051, 'siamese': 3360771}
