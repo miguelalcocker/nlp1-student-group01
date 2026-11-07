@@ -16,7 +16,7 @@ grouped by premise and a Bayesian analysis with a region of practical equivalenc
 | `checks.py` | Prints corpus facts, tokeniser refit and model weights |
 | `figures.py` | Draws the slide figures |
 | `test_pipeline.py` | Checks on splits, features, models and the posterior |
-| `results/` | One JSON line per fit, plus `analysis.txt` and `checks.txt` |
+| `results/` | One JSON line per fit, plus `analysis.txt`, `checks.txt` and `rerun_comparison.txt` |
 | `slides/slides.pdf` | Slides for the oral |
 | `AI_USE.md` | Record of AI assistance |
 
@@ -52,9 +52,11 @@ regenerate them, delete `results/main.jsonl` and `results/controls.jsonl`, then 
 
 ## What repeats exactly
 
-Splits and seeds are fixed. Neural results can differ slightly between runs and machines,
-because GPU computations are not fully deterministic; earlier runs with the same seed differed
-by up to about 0.2 pp on one fit. Compare new numbers with `results/analysis.txt` allowing for that.
+Splits and seeds are fixed, but results still differ slightly between runs, because GPU
+computations are not fully deterministic. A full rerun from an empty results folder changed
+single neural fits by up to 1.1 pp and single log-linear fits by up to 0.2 pp. Means of
+15 fits changed by at most 0.08 pp, and no verdict at the ±1 pp ROPE changed. Details are in
+`results/rerun_comparison.txt`. Compare new numbers with `results/analysis.txt` allowing for that.
 
 `promptID` and premise text do not map one-to-one in a few cases: 98 premise texts have more
 than one `promptID` (636 of 392,702 training rows). We kept `promptID` as the group.

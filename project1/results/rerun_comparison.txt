@@ -1,0 +1,22 @@
+Full rerun from an empty results folder (2026-11-07), same code and seeds, compared with
+the results in this folder. Accuracy differences, new minus stored, in pp.
+
+stage            model        fits   mean diff   max |diff|
+tokeniser        log-linear      9     +0.004       0.04
+tokeniser        neural          8     -0.026       0.19
+representations  log-linear      6     +0.025       0.17
+representations  neural          6     -0.003       0.38
+search           log-linear     18     +0.005       0.06
+search           neural        123     +0.009       1.11
+main             log-linear     45     -0.004       0.07
+main             neural         90     -0.014       0.67
+controls         log-linear     90     -0.001       0.07
+controls         neural         90     -0.007       1.09
+
+Means of 15 fits (Q6 table): largest change 0.08 pp (bow/siamese 63.93 -> 63.85).
+Held-out, overlap/siamese: single 64.40 -> 64.33 (matched), 65.04 -> 64.98 (mismatched);
+vote 65.82 -> 65.76, 66.33 -> 66.46.
+Verdicts at ROPE 1 pp: all 36 pairs unchanged (27 decided, 7 ties, 2 undecided).
+At 0.5 pp: ind/siamese vs bow/siamese goes from tie to undecided.
+At 2 pp: bow/mlp vs overlap/mlp goes from undecided to B.
+checks.txt: identical.
