@@ -93,3 +93,7 @@ Some of the notebooks use [`mermaid`](https://mermaid.js.org/) diagrams. For exa
 ```
 
 If these are not rendering automatically (i.e., you see text instead of a diagram), you might need to upgrade your vscode instance to at least version [1.121.0](https://code.visualstudio.com/updates/v1_121#_mermaid-diagrams-in-markdown-preview-and-notebooks). If this is not possible, you should also be able to replicate this effect by installing the [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid).
+
+## Snellius
+
+If you'd like to run your tutorial notebooks via Snellius, either on CPU or GPU nodes, you can follow the instructions found [here](https://docs.google.com/document/d/18Ql8Hv-ibAGCTBvqmPVSaXBNNBSl1mtnpT8tIyoRPZM/edit?usp=sharing).
