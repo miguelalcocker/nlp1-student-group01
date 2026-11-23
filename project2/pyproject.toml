@@ -1,0 +1,19 @@
+[project]
+name = "nlp1-project2"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = [
+    "arviz",
+    "baycomp>=1.0.3",
+    "datasets>=5.1.0",
+    "jax",
+    "matplotlib>=3.11.2",
+    "nltk",
+    "numpy>=2.5.4",
+    "numpyro",
+    "pandas>=3.1.0",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+    "textstat>=0.7.13",
+    "torch>=2.14.1",
+]

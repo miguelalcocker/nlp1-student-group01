@@ -1,0 +1,112 @@
+=== Q6: 19647 validation pairs; systems: ['p1-siamese', 'rnn', 'rnn-random', 'pool', 'pool-random', 'pool-hyp']; 15 fits each
+
+--- Accuracy (%) by subgroup, mean over the 15 fits
+                                   p1-siamese   rnn  rnn-random  pool  pool-random  pool-hyp      n
+all                                      64.7  72.4        65.7  65.4         61.8      54.1  19647
+label E                                  68.3  78.4        70.8  67.9         64.6      51.0   6942
+label N                                  62.8  66.6        61.4  61.7         57.1      51.7   6252
+label C                                  62.7  71.5        64.5  66.5         63.4      59.7   6453
+negation in hypothesis, E                57.1  70.4        65.1  59.7         56.3      15.8    924
+negation in hypothesis, N                46.5  53.0        49.5  40.3         39.9      30.4    860
+negation in hypothesis, C                87.4  90.8        87.2  88.4         87.8      90.3   2597
+no negation, C                           46.1  58.6        49.2  51.8         47.0      39.0   3856
+overlap >= 0.75, N                       25.1  28.4        23.0  28.6         18.4      40.5    357
+overlap < 0.25, E                        26.4  42.4        26.1  31.7         21.5      47.0    404
+antonym pair                             58.9  70.8        61.3  61.3         58.8      51.2    610
+quantifier in hypothesis                 67.5  73.9        68.6  67.5         64.4      58.0   3428
+premise > 30 tokens                      62.7  68.6        62.3  61.6         58.6      53.5   4322
+premise <= 10 tokens                     66.0  75.3        67.6  68.1         64.0      53.3   4068
+parse depth premise >= 12                63.8  70.3        64.1  63.2         59.8      53.9   8207
+some token without vector                64.0  70.8        64.3  64.4         60.3      55.3   2928
+hypothesis-only gets it (>= 8/15)        78.8  87.8        82.1  81.1         78.1      81.6  11119
+hypothesis-only fails (< 8/15)           46.3  52.2        44.4  45.0         40.7      18.2   8528
+matched                                  64.4  71.9        65.7  65.2         61.8      54.0   9815
+mismatched                               65.0  72.9        65.8  65.7         61.9      54.1   9832
+Binomial SE of one cell with n pairs: about 50/sqrt(n) pp (n = 1000: 1.6 pp), before averaging fits.
+
+--- Feature correlations above 0.5 in absolute value
+   len_premise ~ depth_premise: 0.86
+   len_hypothesis ~ depth_hypothesis: 0.83
+
+--- Bayesian regression (tutorial 2's model, Binomial over 15 fits): max r_hat 1.003, divergences 0
+Weight per standard deviation of the feature: posterior mean [95% interval]
+            feature          p1-siamese                 rnn          rnn-random                pool         pool-random            pool-hyp
+        len_premise -0.11 [-0.13,-0.10] -0.15 [-0.17,-0.13] -0.17 [-0.19,-0.15] -0.16 [-0.18,-0.14] -0.14 [-0.16,-0.12] -0.01 [-0.03,+0.01]
+     len_hypothesis -0.00 [-0.02,+0.02] -0.02 [-0.04,-0.00] +0.03 [+0.01,+0.04] -0.02 [-0.03,-0.00] +0.00 [-0.02,+0.02] -0.04 [-0.06,-0.03]
+      depth_premise -0.01 [-0.03,+0.01] -0.06 [-0.07,-0.04] -0.02 [-0.03,+0.00] -0.01 [-0.03,+0.00] -0.01 [-0.03,+0.01] +0.04 [+0.02,+0.06]
+   depth_hypothesis +0.03 [+0.02,+0.05] +0.04 [+0.02,+0.05] +0.04 [+0.02,+0.06] +0.05 [+0.04,+0.07] +0.02 [+0.01,+0.04] +0.06 [+0.04,+0.07]
+            overlap +0.14 [+0.13,+0.15] +0.10 [+0.09,+0.11] +0.15 [+0.14,+0.16] +0.05 [+0.04,+0.06] +0.11 [+0.10,+0.12] -0.03 [-0.04,-0.01]
+        neg_premise -0.03 [-0.04,-0.02] -0.00 [-0.01,+0.01] +0.01 [+0.00,+0.02] -0.01 [-0.02,-0.00] +0.00 [-0.01,+0.01] -0.11 [-0.12,-0.10]
+     neg_hypothesis +0.11 [+0.10,+0.12] +0.08 [+0.07,+0.09] +0.12 [+0.11,+0.13] +0.06 [+0.05,+0.07] +0.11 [+0.10,+0.12] -0.01 [-0.02,+0.01]
+   quant_hypothesis +0.04 [+0.03,+0.05] +0.02 [+0.01,+0.03] +0.04 [+0.03,+0.05] +0.02 [+0.01,+0.03] +0.03 [+0.02,+0.04] +0.03 [+0.02,+0.04]
+                oov -0.00 [-0.01,+0.01] -0.03 [-0.04,-0.02] -0.03 [-0.04,-0.02] -0.02 [-0.03,-0.01] -0.02 [-0.03,-0.02] +0.02 [+0.01,+0.03]
+    rarest_hyp_word +0.07 [+0.06,+0.07] +0.05 [+0.04,+0.06] +0.10 [+0.09,+0.11] +0.04 [+0.03,+0.05] +0.09 [+0.08,+0.10] +0.01 [+0.00,+0.02]
+       antonym_pair -0.04 [-0.05,-0.03] -0.00 [-0.01,+0.01] -0.03 [-0.04,-0.02] -0.03 [-0.04,-0.02] -0.03 [-0.03,-0.02] -0.05 [-0.06,-0.04]
+          alignment +0.16 [+0.15,+0.17] +0.09 [+0.08,+0.10] +0.12 [+0.11,+0.13] +0.09 [+0.08,+0.10] +0.12 [+0.11,+0.13] +0.02 [+0.01,+0.03]
+   hyp_only_correct +0.75 [+0.74,+0.76] +1.04 [+1.03,+1.05] +0.94 [+0.93,+0.95] +0.87 [+0.86,+0.88] +0.85 [+0.84,+0.86] +1.67 [+1.66,+1.69]
+hyp_only_confidence +0.25 [+0.24,+0.26] +0.19 [+0.18,+0.20] +0.27 [+0.26,+0.28] +0.25 [+0.23,+0.26] +0.29 [+0.28,+0.30] +0.35 [+0.34,+0.37]
+         mismatched +0.01 [+0.01,+0.02] +0.03 [+0.02,+0.04] +0.00 [-0.00,+0.01] +0.02 [+0.01,+0.03] +0.01 [-0.00,+0.02] -0.00 [-0.01,+0.01]
+            label_N -0.03 [-0.04,-0.02] -0.28 [-0.29,-0.26] -0.14 [-0.15,-0.13] -0.10 [-0.12,-0.09] -0.09 [-0.10,-0.08] +0.03 [+0.02,+0.05]
+            label_C -0.18 [-0.19,-0.17] -0.26 [-0.27,-0.24] -0.22 [-0.23,-0.21] -0.10 [-0.11,-0.09] -0.10 [-0.11,-0.09] +0.12 [+0.10,+0.13]
+
+--- Differences in weights between designs: mean, 95% interval, P(difference > 0)
+(only intervals that exclude 0)
+        comparison             feature  mean      interval   P>0
+pool - pool-random    depth_hypothesis  0.03 [+0.01,+0.05] 0.999
+pool - pool-random             overlap -0.06 [-0.07,-0.04] 0.000
+pool - pool-random         neg_premise -0.02 [-0.03,-0.00] 0.006
+pool - pool-random      neg_hypothesis -0.05 [-0.06,-0.04] 0.000
+pool - pool-random     rarest_hyp_word -0.05 [-0.06,-0.03] 0.000
+pool - pool-random           alignment -0.03 [-0.05,-0.02] 0.000
+pool - pool-random    hyp_only_correct  0.02 [+0.00,+0.03] 0.991
+pool - pool-random hyp_only_confidence -0.04 [-0.06,-0.03] 0.000
+  rnn - rnn-random      len_hypothesis -0.05 [-0.07,-0.02] 0.000
+  rnn - rnn-random       depth_premise -0.04 [-0.06,-0.01] 0.002
+  rnn - rnn-random             overlap -0.05 [-0.07,-0.04] 0.000
+  rnn - rnn-random         neg_premise -0.02 [-0.03,-0.00] 0.006
+  rnn - rnn-random      neg_hypothesis -0.05 [-0.06,-0.03] 0.000
+  rnn - rnn-random    quant_hypothesis -0.02 [-0.04,-0.01] 0.001
+  rnn - rnn-random     rarest_hyp_word -0.05 [-0.06,-0.04] 0.000
+  rnn - rnn-random        antonym_pair  0.03 [+0.02,+0.04] 1.000
+  rnn - rnn-random           alignment -0.03 [-0.04,-0.02] 0.000
+  rnn - rnn-random    hyp_only_correct  0.10 [+0.09,+0.11] 1.000
+  rnn - rnn-random hyp_only_confidence -0.08 [-0.10,-0.06] 0.000
+  rnn - rnn-random          mismatched  0.03 [+0.02,+0.04] 1.000
+  rnn - rnn-random             label_N -0.13 [-0.15,-0.12] 0.000
+  rnn - rnn-random             label_C -0.03 [-0.05,-0.02] 0.000
+        rnn - pool       depth_premise -0.04 [-0.07,-0.02] 0.001
+        rnn - pool             overlap  0.05 [+0.04,+0.06] 1.000
+        rnn - pool      neg_hypothesis  0.02 [+0.00,+0.03] 0.992
+        rnn - pool        antonym_pair  0.03 [+0.02,+0.04] 1.000
+        rnn - pool    hyp_only_correct  0.17 [+0.16,+0.18] 1.000
+        rnn - pool hyp_only_confidence -0.06 [-0.07,-0.04] 0.000
+        rnn - pool          mismatched  0.02 [+0.00,+0.03] 0.996
+        rnn - pool             label_N -0.17 [-0.19,-0.16] 0.000
+        rnn - pool             label_C -0.15 [-0.17,-0.14] 0.000
+ pool - p1-siamese         len_premise -0.05 [-0.07,-0.03] 0.000
+ pool - p1-siamese    depth_hypothesis  0.02 [+0.00,+0.04] 0.989
+ pool - p1-siamese             overlap -0.10 [-0.11,-0.08] 0.000
+ pool - p1-siamese         neg_premise  0.02 [+0.00,+0.03] 0.996
+ pool - p1-siamese      neg_hypothesis -0.06 [-0.07,-0.04] 0.000
+ pool - p1-siamese    quant_hypothesis -0.02 [-0.03,-0.01] 0.000
+ pool - p1-siamese                 oov -0.02 [-0.03,-0.00] 0.005
+ pool - p1-siamese     rarest_hyp_word -0.02 [-0.03,-0.01] 0.000
+ pool - p1-siamese           alignment -0.07 [-0.08,-0.05] 0.000
+ pool - p1-siamese    hyp_only_correct  0.12 [+0.11,+0.13] 1.000
+ pool - p1-siamese             label_N -0.08 [-0.09,-0.06] 0.000
+ pool - p1-siamese             label_C  0.08 [+0.07,+0.09] 1.000
+  rnn - p1-siamese         len_premise -0.04 [-0.06,-0.01] 0.003
+  rnn - p1-siamese       depth_premise -0.05 [-0.07,-0.02] 0.000
+  rnn - p1-siamese             overlap -0.04 [-0.06,-0.03] 0.000
+  rnn - p1-siamese         neg_premise  0.03 [+0.01,+0.04] 1.000
+  rnn - p1-siamese      neg_hypothesis -0.04 [-0.05,-0.02] 0.000
+  rnn - p1-siamese    quant_hypothesis -0.02 [-0.04,-0.01] 0.000
+  rnn - p1-siamese                 oov -0.03 [-0.04,-0.01] 0.000
+  rnn - p1-siamese     rarest_hyp_word -0.02 [-0.03,-0.01] 0.002
+  rnn - p1-siamese        antonym_pair  0.04 [+0.02,+0.05] 1.000
+  rnn - p1-siamese           alignment -0.07 [-0.09,-0.06] 0.000
+  rnn - p1-siamese    hyp_only_correct  0.29 [+0.28,+0.30] 1.000
+  rnn - p1-siamese hyp_only_confidence -0.06 [-0.08,-0.05] 0.000
+  rnn - p1-siamese          mismatched  0.02 [+0.01,+0.03] 0.999
+  rnn - p1-siamese             label_N -0.25 [-0.26,-0.23] 0.000
+  rnn - p1-siamese             label_C -0.07 [-0.09,-0.06] 0.000

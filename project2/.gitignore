@@ -1,0 +1,14 @@
+cache/
+results/probs/
+results/figures/
+__pycache__/
+.venv/
+*.lock.tmp
+slides/*.aux
+slides/*.log
+slides/*.nav
+slides/*.out
+slides/*.snm
+slides/*.toc
+slides/*.fls
+slides/*.fdb_latexmk

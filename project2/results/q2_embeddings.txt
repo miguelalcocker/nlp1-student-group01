@@ -1,0 +1,82 @@
+=== Q2: cosine similarity by WordNet relation; 10649 lowercase MultiNLI words seen 20+ times and covered by all 7 tables
+pairs per relation: {'synonym': 29291, 'antonym': 526, 'hypernym': 59986, 'co-hyponym': 394498, 'random': 5000}
+       table     synonym      antonym    hypernym  co-hyponym      random  AUC syn>ant  AUC syn>cohyp  AUC ant>random
+   glove840B 0.40 (0.20)  0.55 (0.17) 0.31 (0.14) 0.23 (0.12) 0.16 (0.11)        0.271          0.759           0.972
+    fasttext 0.32 (0.20)  0.52 (0.18) 0.23 (0.12) 0.15 (0.09) 0.11 (0.07)        0.226          0.788           0.988
+    word2vec 0.27 (0.21)  0.42 (0.19) 0.17 (0.13) 0.11 (0.09) 0.06 (0.07)        0.277          0.761           0.968
+ glove6B-300 0.30 (0.21)  0.46 (0.18) 0.22 (0.15) 0.14 (0.12) 0.07 (0.10)        0.268          0.745           0.973
+glove2024-50 0.56 (0.19)  0.70 (0.16) 0.51 (0.17) 0.43 (0.17) 0.29 (0.18)        0.288          0.701           0.953
+  counterfit 0.39 (0.31) -0.02 (0.09) 0.21 (0.21) 0.09 (0.12) 0.05 (0.08)        0.957          0.818           0.209
+ numberbatch 0.34 (0.26)  0.44 (0.20) 0.18 (0.16) 0.08 (0.11) 0.03 (0.07)        0.347          0.838           0.982
+Mean (SD) cosine. AUC syn>ant: chance that a synonym pair is closer than an antonym pair (0.5 = no separation).
+Examples: {'synonym': [('a', 'amp'), ('a', 'as'), ('abandon', 'abandoned'), ('abandon', 'desert'), ('abandon', 'deserted'), ('abandon', 'deserts'), ('abandon', 'empty'), ('abandoned', 'desert')], 'antonym': [('ability', 'inability'), ('able', 'unable'), ('above', 'below'), ('absence', 'presence'), ('absent', 'present'), ('absolute', 'relative'), ('abstract', 'concrete'), ('abundant', 'scarce')], 'hypernym': [('a', 'base'), ('a', 'letter'), ('abandon', 'dispose'), ('abandon', 'leave'), ('abandon', 'passion'), ('abandon', 'toss'), ('abandoned', 'dispose'), ('abandoned', 'leave')], 'co-hyponym': [('a', 'alpha'), ('a', 'b'), ('a', 'c'), ('a', 'd'), ('a', 'dam'), ('a', 'e'), ('a', 'ex'), ('a', 'f')], 'random': [(np.str_('abandon'), np.str_('counts')), (np.str_('abandon'), np.str_('singing')), (np.str_('abandon'), np.str_('symbols')), (np.str_('abandoned'), np.str_('accommodation')), (np.str_('abandoned'), np.str_('protests')), (np.str_('abandoned'), np.str_('ridin')), (np.str_('abide'), np.str_('eyebrows')), (np.str_('abide'), np.str_('observer'))]}
+
+=== Nearest neighbours among MultiNLI words (cosine), words that matter for entailment
+-- glove840B
+   cheap     ['cheapest', 'discount', 'buy', 'discounted', 'inexpensive', 'prices', 'cheaper', 'affordable']
+   increase  ['increased', 'decrease', 'increasing', 'increases', 'reduce', 'decreased', 'significantly', 'higher']
+   hot       ['sexy', 'wet', 'hottest', 'naked', 'cold', 'ass', 'heat', 'sex']
+   never     ['ever', 'always', 'did', 'even', 'actually', 'knew', 'still', 'not']
+   always    ['never', 'really', 'definitely', 'sure', 'still', 'certainly', 'often', 'actually']
+   all       ['those', 'these', 'other', 'everything', 'many', 'them', 'things', 'some']
+   none      ['neither', 'nothing', 'nor', 'though', 'nobody', 'not', 'else', 'doubt']
+   man       ['woman', 'guy', 'boy', 'he', 'men', 'gentleman', 'himself', 'him']
+   dog       ['dogs', 'puppy', 'pet', 'cat', 'puppies', 'cats', 'pets', 'animal']
+   buy       ['purchase', 'buying', 'sell', 'cheap', 'cheapest', 'discount', 'selling', 'price']
+   allowed   ['permitted', 'allow', 'allowing', 'not', 'unless', 'they', 'would', 'only']
+   true      ['truth', 'truly', 'sense', 'believe', 'indeed', 'nothing', 'kind', 'not']
+-- word2vec
+   cheap     ['inexpensive', 'cheaper', 'cheapest', 'cheaply', 'overpriced', 'pricey', 'expensive', 'affordable']
+   increase  ['decrease', 'increases', 'increased', 'reduction', 'increasing', 'decreases', 'rise', 'decreasing']
+   hot       ['hottest', 'cool', 'heated', 'heat', 'cold', 'humid', 'warm', 'sticky']
+   never     ['not', 'nobody', 'rarely', 'seldom', 'anything', 'once', 'always', 'none']
+   always    ['definitely', 'really', 'obviously', 'certainly', 'never', 'everybody', 'whenever', 'something']
+   all       ['these', 'those', 'everyone', 'everything', 'various', 'everybody', 'kinds', 'other']
+   none      ['neither', 'nobody', 'no', 'never', 'hardly', 'unlike', 'other', 'only']
+   man       ['woman', 'boy', 'teenager', 'girl', 'men', 'guy', 'person', 'gentleman']
+   dog       ['dogs', 'puppy', 'cat', 'pet', 'cats', 'puppies', 'pets', 'animal']
+   buy       ['sell', 'purchase', 'buying', 'bought', 'buys', 'purchased', 'acquire', 'purchasing']
+   allowed   ['permitted', 'allowing', 'allow', 'able', 'forced', 'let', 'enabled', 'obliged']
+   true      ['truth', 'genuine', 'real', 'indeed', 'pure', 'essence', 'plausible', 'ultimate']
+-- counterfit
+   cheap     ['cheaper', 'cheaply', 'inexpensive', 'cheapest', 'affordable', 'low', 'economical', 'lower']
+   increase  ['increasing', 'increased', 'grew', 'growing', 'grow', 'increases', 'grows', 'raising']
+   hot       ['hottest', 'sexy', 'warmer', 'cannon', 'warm', 'heat', 'heated', 'warming']
+   never     ['not', 'no', 'none', 'nothing', 'neither', 'without', 'non', 'forever']
+   always    ['permanently', 'constantly', 'consistently', 'continually', 'continuously', 'steadily', 'repeatedly', 'ever']
+   all       ['every', 'everything', 'entire', 'everyone', 'whole', 'everybody', 'entirety', 'each']
+   none      ['no', 'nothing', 'zero', 'anything', 'not', 'any', 'neither', 'without']
+   man       ['men', 'guy', 'males', 'male', 'boyfriend', 'boys', 'guys', 'boy']
+   dog       ['puppy', 'dogs', 'puppies', 'bark', 'kittens', 'husky', 'pets', 'cats']
+   buy       ['purchasing', 'purchase', 'buying', 'acquisition', 'purchases', 'buys', 'acquiring', 'bought']
+   allowed   ['enabled', 'enables', 'allow', 'permitted', 'enable', 'allowing', 'allows', 'permitting']
+   true      ['genuine', 'authentic', 'truthful', 'real', 'genuinely', 'truly', 'honest', 'loyal']
+
+=== Task evidence: MultiNLI pairs where a premise word and a hypothesis word are WordNet antonyms
+10147 pool pairs (2.9%); labels E/N/C: [15.3, 20.1, 64.6] (pool: 33.3 each)
+Cosine of that antonym pair, by table: {'glove840B': 0.66, 'fasttext': 0.58, 'word2vec': 0.53, 'glove6B-300': 0.62, 'glove2024-50': 0.84, 'counterfit': -0.04, 'numberbatch': 0.52}
+
+=== Task evidence: alignment of new hypothesis words with the premise, by label
+For each pair: mean over hypothesis words not in the premise of their highest cosine with a premise word.
+       table     E     N     C  AUC E>C  AUC E>N
+   glove840B 0.619 0.588 0.608    0.536    0.600
+    fasttext 0.447 0.405 0.428    0.557    0.627
+    word2vec 0.410 0.367 0.396    0.538    0.614
+ glove6B-300 0.576 0.544 0.564    0.535    0.600
+glove2024-50 0.841 0.823 0.833    0.542    0.605
+  counterfit 0.472 0.399 0.407    0.620    0.640
+ numberbatch 0.454 0.391 0.419    0.581    0.652
+(28572 of 30000 sampled pool pairs have new hypothesis words covered by every table)
+
+=== Limitation: gender direction (he - she), projection of occupation words (Bolukbasi et al., 2016)
+glove840B   most 'she': ['nurse', 'teacher', 'doctor', 'secretary']  most 'he': ['manager', 'president', 'architect', 'engineer']
+fasttext    most 'she': ['nurse', 'secretary', 'teacher', 'pilot']  most 'he': ['soldier', 'president', 'engineer', 'architect']
+word2vec    most 'she': ['nurse', 'teacher', 'secretary', 'doctor']  most 'he': ['manager', 'engineer', 'boss', 'architect']
+counterfit  most 'she': ['nurse', 'secretary', 'pilot', 'scientist']  most 'he': ['manager', 'architect', 'soldier', 'engineer']
+
+=== Limitation: one vector per word type (polysemy)
+   bank    ['banks', 'banking', 'financial', 'credit', 'lender', 'loan', 'lending', 'cash', 'mortgage', 'loans']
+   right   ['way', 'you', 'just', 'it', 'sure', 'out', 'wrong', 'going', 'go', 'get']
+   fine    ['well', 'good', 'nice', 'but', 'very', 'perfectly', 'pretty', 'though', 'so', 'quite']
+   spring  ['summer', 'winter', 'fall', 'autumn', 'springs', 'season', 'bloom', 'seasons', 'end', 'weekend']
+   plant   ['plants', 'planting', 'fertilizer', 'crops', 'soil', 'planted', 'trees', 'flower', 'seeds', 'seed']

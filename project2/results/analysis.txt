@@ -1,0 +1,69 @@
+
+=== Final systems: grouped 5-fold CV x 3 (accuracy %), and validation sets (single = mean over the 15 fits, vote = average of their probabilities)
+     system  fits   acc   sd    f1  train  epochs  capped  es_optimism   params  minutes  m_single  m_sd  m_vote  mm_single  mm_sd  mm_vote
+        rnn    15 72.41 0.21 72.35  80.73   18.33       0         0.09  2193411    56.54     71.89  0.22   73.36      72.85   0.28    74.25
+ rnn-random    15 66.35 0.26 66.28  77.32   10.20       0         0.23 18226011    37.11     65.66  0.37   67.46      65.78   0.30    67.67
+    rnn-hyp    15 56.95 0.26 56.98  62.45   12.60       0         0.08  1406979    18.05     56.19  0.38   57.08      56.27   0.30    57.26
+       pool    15 65.17 0.21 65.16  74.16    6.00       0         0.25 28239839     7.97     65.18  0.30   65.63      65.72   0.27    66.65
+pool-random    15 62.24 0.29 62.23  71.46    7.27       0         0.37 17236739     7.68     61.81  0.36   63.46      61.87   0.38    63.70
+   pool-hyp    15 54.42 0.19 54.41  59.54    5.53       0         0.06 27453407     6.02     54.04  0.30   54.29      54.10   0.27    54.45
+es_optimism: fold accuracy of the best epoch for the fold minus that of the epoch kept by the tuning set (pp).
+
+=== Project 1 systems on the same folds (accuracy %, 15 fits)
+  p1 bow loglinear         53.04 +- 0.19
+  p1 bow mlp               61.15 +- 0.24
+  p1 bow siamese           63.93 +- 0.32
+  p1 ind loglinear         53.14 +- 0.17
+  p1 ind mlp               61.34 +- 0.16
+  p1 ind siamese           64.01 +- 0.29
+  p1 overlap loglinear     61.87 +- 0.17
+  p1 overlap mlp           63.38 +- 0.21
+  p1 overlap siamese       64.85 +- 0.21
+
+=== Correlated Bayesian t-test (runs=3), ROPE +-1 pp; difference = second - first
+                pool - p1 overlap siamese  +0.32 pp  P(p1 overlap siamese better) 0.000  P(tie) 1.000  P(pool better) 0.000  -> tie
+                 rnn - p1 overlap siamese  +7.56 pp  P(p1 overlap siamese better) 0.000  P(tie) 0.000  P(rnn better) 1.000  -> B
+                 rnn - pool                +7.24 pp  P(pool better) 0.000  P(tie) 0.000  P(rnn better) 1.000  -> B
+                pool - pool-random         +2.93 pp  P(pool-random better) 0.000  P(tie) 0.000  P(pool better) 1.000  -> B
+                 rnn - rnn-random          +6.06 pp  P(rnn-random better) 0.000  P(tie) 0.000  P(rnn better) 1.000  -> B
+         pool-random - p1 overlap siamese  -2.61 pp  P(p1 overlap siamese better) 1.000  P(tie) 0.000  P(pool-random better) 0.000  -> A
+          rnn-random - p1 overlap siamese  +1.50 pp  P(p1 overlap siamese better) 0.000  P(tie) 0.009  P(rnn-random better) 0.991  -> B
+          rnn-random - pool-random         +4.11 pp  P(pool-random better) 0.000  P(tie) 0.000  P(rnn-random better) 1.000  -> B
+                pool - pool-hyp           +10.76 pp  P(pool-hyp better) 0.000  P(tie) 0.000  P(pool better) 1.000  -> B
+                 rnn - rnn-hyp            +15.46 pp  P(rnn-hyp better) 0.000  P(tie) 0.000  P(rnn better) 1.000  -> B
+             rnn-hyp - pool-hyp            +2.54 pp  P(pool-hyp better) 0.000  P(tie) 0.000  P(rnn-hyp better) 1.000  -> B
+
+=== Q4: data size, fold 0 of each repetition (accuracy %, 3 fits per point)
+     system  frac  n  n_train   acc   sd  train  epochs  capped
+       pool  0.01  3     2828 51.65 0.29  67.00   11.67       0
+       pool  0.03  3     8490 55.40 0.44  65.84    7.67       0
+       pool  0.10  3    28282 59.61 0.14  72.32    7.00       0
+       pool  0.30  3    84843 62.38 0.14  72.32    6.00       0
+       pool  1.00  3   282630 65.04 0.27  73.07    5.67       0
+pool-random  0.01  3     2828 48.12 0.61  61.94   10.00       0
+pool-random  0.03  3     8490 52.10 0.25  62.15    7.33       0
+pool-random  0.10  3    28282 55.93 0.28  68.34    7.33       0
+pool-random  0.30  3    84843 58.77 0.05  69.51    7.00       0
+pool-random  1.00  3   282630 62.20 0.16  71.58    7.33       0
+        rnn  0.01  3     2828 56.80 0.71  79.82   20.00       0
+        rnn  0.03  3     8490 60.82 0.11  76.72   13.33       0
+        rnn  0.10  3    28282 65.01 0.23  77.01   11.00       0
+        rnn  0.30  3    84843 68.73 0.14  81.07   14.67       0
+        rnn  1.00  3   282630 72.35 0.24  81.41   19.33       0
+ rnn-random  0.01  3     2828 48.70 1.04  67.01   14.67       0
+ rnn-random  0.03  3     8490 54.68 0.14  70.80   10.33       0
+ rnn-random  0.10  3    28282 58.29 0.07  69.11    7.67       0
+ rnn-random  0.30  3    84843 61.76 0.22  73.67    8.33       0
+ rnn-random  1.00  3   282630 66.21 0.26  75.59    9.33       0
+
+=== Gain from pretraining at each data size: pretrained - random, paired by repetition (pp)
+  pool frac 0.01   +3.53 +- 0.89  (per repetition: +2.67, +3.46, +4.45)
+  pool frac 0.03   +3.31 +- 0.54  (per repetition: +3.42, +2.72, +3.78)
+  pool frac 0.1    +3.67 +- 0.40  (per repetition: +3.37, +4.12, +3.52)
+  pool frac 0.3    +3.61 +- 0.10  (per repetition: +3.67, +3.67, +3.50)
+  pool frac 1.0    +2.84 +- 0.39  (per repetition: +2.40, +3.12, +2.99)
+   rnn frac 0.01   +8.10 +- 0.95  (per repetition: +9.03, +8.15, +7.13)
+   rnn frac 0.03   +6.14 +- 0.14  (per repetition: +5.98, +6.19, +6.25)
+   rnn frac 0.1    +6.72 +- 0.18  (per repetition: +6.67, +6.92, +6.57)
+   rnn frac 0.3    +6.97 +- 0.13  (per repetition: +7.05, +7.05, +6.82)
+   rnn frac 1.0    +6.14 +- 0.02  (per repetition: +6.17, +6.14, +6.12)
