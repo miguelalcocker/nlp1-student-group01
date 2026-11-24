@@ -34,7 +34,7 @@
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[t]{Q1 Table: 300d vectors read with the tokens they were trained on}
+\begin{frame}[t]{Q1 Embedding suitability: lexical information and compatible tokenisation matter more than coverage alone}
 \vspace{-4pt}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.50\textwidth}
@@ -119,7 +119,7 @@ Counter-fitting fixes the geometry, but not accuracy: frozen pool $+0.8$\pp, BiL
 {\scriptsize
 \begin{itemize}\setlength{\itemsep}{1pt}
 \item One vector per type: \emph{right} $\to$ way, you, sure, wrong.
-\item Gender direction (he$-$she), all four tables: \emph{nurse, secretary} vs \emph{engineer, architect}.
+\item Gender direction (he$-$she), 4 tables checked (excl.\ Numberbatch): \emph{nurse, secretary} vs \emph{engineer, architect}.
 \item No order: \emph{A dog bit a man} = \emph{A man bit a dog} after pooling.
 \end{itemize}\par}
 \vspace{2pt}
@@ -149,18 +149,18 @@ $>0.5$\pp but a scratch table ($-2.3$).\par}
 {\scriptsize\centering
 \begin{tabular}{@{}lr@{}}\toprule
 System & accuracy\\\midrule
+P1: BPE + overlap (reference) & 64.85\sd{0.21}\\\midrule
 pool, fine-tuned fastText & \best{65.17}\sd{0.21}\\
-P1: BPE + overlap, Siamese & 64.85\sd{0.21}\\
 pool, scratch table & 62.24\sd{0.29}\\
 pool, hypothesis only & 54.42\sd{0.19}\\\bottomrule
 \end{tabular}\par}
 \vspace{3pt}
-{\scriptsize No: pool $-$ P1 $= +0.3$\pp, \textbf{P(tie) = 1.00}. P1 pooled scratch BPE vectors
+{\scriptsize No: pool $-$ P1 $= +0.3$\pp (a practical tie). P1 pooled scratch BPE vectors
 plus overlap features; pretrained vectors match it without them, and adding overlap does not help
-($-0.4$\pp). Pretraining: $+2.9$\pp (P = 1.00).\par}
+($-0.4$\pp). Pretraining: $+2.9$\pp.\par}
 \end{column}
 \end{columns}
-\src{Left: tuning set, 3 seeds; dot: mean $\Delta$ to the base, paired by seed; bar: SD of that $\Delta$ over seeds (in step 1 mostly hidden by the dot); grey band $\pm$1\pp.
+\src{Left: tuning set, 3 seeds; dot: mean $\Delta$ to the base, paired by seed; bar: SD of that $\Delta$ over seeds (in step 1 mostly hidden by the dot); grey band $\pm$1\pp (negligible difference).
 Step 1 base: frozen GloVe 840B; step 2 base: fine-tuned + 512d projection. Final: fine-tuned fastText, \texttt{nltk-not}, 512d projection, mean pooling, MLP 512. CV: 5 folds $\times$ 3, $\pm$ SD over the 15 scores.}
 \end{frame}
 
@@ -195,7 +195,7 @@ scratch table & 66.35\sd{0.26} & 62.24\sd{0.29}\\
 hypothesis only & 56.95\sd{0.26} & 54.42\sd{0.19}\\\bottomrule
 \end{tabular}\par}
 \vspace{2pt}
-{\scriptsize BiLSTM $-$ pool $+7.2$\pp, $-$ P1 $+7.6$\pp (P = 1.00); with scratch tables still $+4.1$\pp.
+{\scriptsize BiLSTM $-$ pool $+7.2$\pp, $-$ P1 $+7.6$\pp; with scratch tables still $+4.1$\pp.
 Matched / mismatched validation: 71.9 / 72.9\%.\par}
 \end{column}
 \end{columns}
@@ -209,47 +209,49 @@ Design: tuning set, $\Delta$ to the base paired by seed. CV: 5 folds $\times$ 3,
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.52\textwidth}
 \hd{Search: one change at a time, twice}
-\begin{tikzpicture}[font=\fontsize{6}{7}\selectfont,>={Stealth[length=3pt]},
-  ch/.style={draw=muted!60,rounded corners=1.5pt,fill=soft,inner sep=2pt,align=center,minimum height=.62cm},
-  box/.style={draw=muted!40,rounded corners=2pt,inner sep=3pt},
+\begin{tikzpicture}[font=\fontsize{5.5}{6.5}\selectfont,>={Stealth[length=3pt]},
+  ch/.style={draw=muted!60,rounded corners=1.5pt,fill=soft,inner sep=2pt,align=center,minimum height=.58cm},
+  box/.style={draw=muted!40,rounded corners=2pt,inner sep=2.5pt},
   lab/.style={anchor=south west,inner sep=1pt,text=muted},
   fin/.style={ch,fill=white,draw=accent}]
-\node[ch,text width=1.45cm] (lr) at (0,0) {lr pilot\\fixes lr $3{\cdot}10^{-4}$};
-\node[ch,text width=0.95cm] (tab) at (1.95,0) {tables\\11 / 7};
-\node[ch,text width=0.95cm] (tok) at (3.1,0) {tokens\\12};
-\node[ch,text width=1.1cm] (p1) at (4.35,0) {pool\\28 changes};
-\node[ch,text width=1.1cm] (r1) at (5.7,0) {BiLSTM\\21 changes};
+\node[ch,text width=1.35cm] (lr) at (0,0) {lr pilot\\fixes lr $3{\cdot}10^{-4}$};
+\node[ch,text width=1.0cm] (tab) at (1.8,0) {embedding\\tables};
+\node[ch,text width=0.95cm] (tok) at (2.95,0) {tokeni-\\sation};
+\node[ch,text width=0.95cm] (p1) at (4.05,0) {pool\\search};
+\node[ch,text width=1.05cm] (r1) at (5.2,0) {BiLSTM\\search};
 \node[box,fit=(tab)(r1)] (s1) {};
 \node[lab] at (s1.north west) {Step 1, in parallel: base = frozen GloVe 840B, NLTK};
-\node[ch,text width=2.3cm] (r2) at (2.55,-1.45) {BiLSTM base + Numberbatch\\then 8 changes};
-\node[ch,text width=2.3cm] (p2) at (5.15,-1.45) {pool base + fine-tune\\+ 512d, then 14 changes};
+\node[ch,text width=2.15cm] (r2) at (2.4,-1.35) {BiLSTM base\\+ Numberbatch};
+\node[ch,text width=2.15cm] (p2) at (4.85,-1.35) {pool base + fine-tune\\+ 512d projection};
 \node[box,fit=(r2)(p2)] (s2) {};
 \node[lab,anchor=north west] at (s2.south west) {Step 2: new bases, since gains need not add up};
-\node[fin,text width=1.45cm] (cv) at (0,-1.45) {final: CV $\times$ 3,\\then data size};
+\node[fin,text width=1.35cm] (cv) at (0,-1.35) {final: 5-fold\\CV $\times$ 3};
 \draw[->,muted] (lr)--(s1.west|-lr);
-\draw[->,pool] (p1.south)--node[right,pos=.5,inner sep=1pt]{$+5.8$, tested jointly} (p1.south|-p2.north);
-\draw[->,rnn] (tab.south)--node[right,pos=.5,inner sep=1pt]{$+1.4$ (tables stage)} (tab.south|-r2.north);
+\draw[->,pool] (p1.south)--node[right,pos=.5,inner sep=1pt]{$+5.8$ (joint)} (p1.south|-p2.north);
+\draw[->,rnn] (tab.south)--node[right,pos=.5,inner sep=1pt]{$+1.4$ (tables)} (tab.south|-r2.north);
 \draw[->,muted] (s2.west)--(cv.east);
 \end{tikzpicture}\par
-\vspace{4pt}
+\vspace{3pt}
 \hd{Close calls in step 2 (BiLSTM, $\Delta$ to its base, 72.96\%)}
 {\scriptsize\centering
 \begin{tabular}{@{}lrl@{}}\toprule
 Change & $\Delta$ (SD) & decision\\\midrule
 decay 0.1 & $+0.35$ (0.42) & \best{kept}: step 1 $+0.71$\\
-decay 0.1, 512 units, 2 layers & $+0.46$ (0.30) & tie, over-fits more\\
-GRU instead of LSTM & $+0.03$ (0.27) & no gain\\\bottomrule
++ 512u, 2 layers & $+0.46$ (0.30) & rejected: tie, overfits\\
+GRU vs LSTM & $+0.03$ (0.27) & rejected: within noise\\\bottomrule
 \end{tabular}\par}
+\vspace{2pt}
+{\fontsize{6}{7}\selectfont\textbf{Why decay 0.1 vs row 2:} Row 2's $+0.11$\pp gain over decay alone is within seed noise ($\pm 0.30$), but triples parameters and overfits (train 83.0\% vs 81.5\%). Decay 0.1 costs 0 parameters and was robust in step 1 ($+0.71$).\par}
 \end{column}
-\begin{column}{.45\textwidth}
-\hd{Three things that would have misled us}
+\begin{column}{.46\textwidth}
+\hd{Tracking variance \& substantiating choices}
 {\scriptsize
-\textbf{Epoch cap.} A first run stopped at 20 epochs while BiLSTMs still improved: 51 fits set aside,
-cap 60, and each fit records whether it hit it (1 of 462, a setting not chosen).\\[2pt]
-\textbf{Learning rate $\times$ decay.} In AdamW the shrinkage per step is lr $\times$ wd: higher lr
-lowered \emph{training} accuracy too, so the grid varies both.\\[2pt]
-\textbf{Table scale.} Unit-norm tables are 7$\times$ smaller: at that scale counter-fitted and Numberbatch lose 1.6--1.7\pp, so all tables are rescaled to coordinate SD 0.4.\par}
-\vspace{5pt}
+\begin{itemize}\setlength{\itemsep}{1pt}
+\item \textbf{Seed variance \& pairing}: 3 seeds per setting (median SD 0.17\pp). Paired $\Delta$ cancels shared seed noise; $|\Delta| \le \text{SD}$ treated as noise/tie.
+\item \textbf{Cross-validation}: Final models use \textbf{premise-grouped 5-fold CV $\times$ 3} (15 fits) to measure split variance and prevent premise leakage.
+\item \textbf{Bayesian testing (ROPE)}: Correlated $t$-test with ROPE $\pm 1$\pp to substantiate practical equivalence.
+\end{itemize}\par}
+\vspace{3pt}
 \hd{Learning-rate pilot, before any search}
 {\scriptsize\centering
 \begin{tabular}{@{}lrr@{}}\toprule
@@ -258,8 +260,8 @@ $3\cdot10^{-4}$ & \best{71.6}\sd{0.1} & \best{59.6}\sd{0.2}\\
 $10^{-3}$ & 70.4\sd{0.4} & 57.8\sd{0.1}\\
 $2\cdot10^{-3}$ / $3\cdot10^{-3}$ & 68.8\sd{0.2} & 56.3\sd{0.1}\\\bottomrule
 \end{tabular}\par}
-\vspace{2pt}
-{\scriptsize It sets the centre, not a bound: steps 1 and 2 still test lr$/3$ and lr$\times3$.\par}
+\vspace{1pt}
+{\scriptsize Sets the search center, not a bound: steps 1 and 2 still test lr$/3$ and lr$\times3$.\par}
 \end{column}
 \end{columns}
 \src{Every setting: 3 seeds; $\Delta$ to its base paired by seed (median seed SD 0.17\pp, max 0.74); close calls: SD of the paired $\Delta$.
@@ -272,8 +274,8 @@ Final comparisons: Bayesian correlated $t$-test on the 15 CV fold scores (runs =
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
 \hd{What predicts a correct fit (19,647 val. pairs)}
-\includegraphics[width=.86\linewidth]{q6_weights.pdf}
-\vspace{2pt}
+\includegraphics[width=.82\linewidth]{q6_weights.pdf}
+\vspace{1pt}
 \hd{Features we tested (17, standardised)}
 {\scriptsize Length, parse depth; overlap, alignment; negation, quantifiers, antonyms;
 rarest word, words without vector; hypothesis-only BiLSTM's correctness and confidence
@@ -282,22 +284,20 @@ rarest word, words without vector; hypothesis-only BiLSTM's correctness and conf
 \begin{column}{.50\textwidth}
 \hd{Differences between designs (95\% interval excludes 0)}
 {\scriptsize
-\begin{itemize}\setlength{\itemsep}{1pt}
-\item \textbf{Pretrained vs scratch}, both encoders: less weight on overlap, negation cue and
-rare words ($-0.05$ each).
-\item \textbf{BPE vs word tables}: tokens without a vector hurt pool and BiLSTM, not P1.
-\item \textbf{Antonym pairs} (Q2) hurt P1, pool and scratch tables, not the BiLSTM (+0.03 vs pool).
-\item \textbf{Long premises}, against our expectation, hurt the BiLSTM as much as pool
-(parse depth: $-0.04$ vs pool); $>$30 tokens: 68.6\% vs 72.4\% overall.
-\item \textbf{Artefacts}: hypothesis-only correctness predicts every design most ($+0.75$ to $+1.04$);
-pairs it fails: BiLSTM 52.2\%, P1 46.3\%, pool 45.0\%.
-\item \textbf{Neutral}: BiLSTM $-$ P1 is $+10.1$ (E), $+8.8$ (C), only $+3.8$\pp (N).
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
+\item \textbf{Pretrained vs scratch}: less weight on surface overlap, negation, rare words ($-0.05$ each).
+\item \textbf{BPE vs word tables}: OOV words hurt word models (pool/BiLSTM), not P1 (BPE).
+\item \textbf{Antonym pairs} (Q2): hurt P1/pool ($-0.03$), not BiLSTM (+0.03 vs pool; acc 70.8\%).
+\item \textbf{Long premises}: hurt BiLSTM as much as pool (depth $-0.04$ vs pool; $>$30 tok: 68.6\%).
+\item \textbf{Artefacts}: hyp-only correctness dominates ($+0.75$ to $+1.04$); failing it, BiLSTM is 52.2\%.
+\item \textbf{Neutral pairs}: BiLSTM gain is smallest on neutral (+3.8\pp vs +10.1\pp E, +8.8\pp C).
 \end{itemize}\par}
-\vspace{-1pt}
+\vspace{1pt}
 \hd{What we would prioritise}
-{\scriptsize 1. Cross-sentence attention (ESIM-style): we compare sentences only after pooling,
-which hurts neutral pairs and long premises. 2. Report the artefact-hard subset.
-3. Subword vectors for missing words.\par}
+{\fontsize{6}{7.2}\selectfont
+1.~\textbf{Cross-sentence attention} (ESIM-style): token-level cross-alignment before pooling to resolve long premises and subtle neutral relations.\\
+2.~\textbf{Contextualised representations} (Transformers): dynamic representations to resolve polysemy, syntactic depth, and OOV issues.\\
+3.~\textbf{Data augmentation} (counterfactual pairs): train with balanced examples (e.g.\ negation in entailment) to curb surface heuristic reliance.\par}
 \end{column}
 \end{columns}
 \src{Tutorial 2's Bayesian regression of correctness on standardised features, Binomial over the 15 CV fits of each pair; 4 chains, $\hat r \le 1.003$, 0 divergences.
