@@ -376,7 +376,7 @@ class RNNEncoder(nn.Module):
             e_t = embeddings[..., t, :]  # (..., emb_dim)            
             # Candidate state for every example in the batch.
              # (..., hidden_dim)
-            h_candidate = torch.tanh(self.elman_net(torch.cat([e_t, h], -1)))             
+            h_candidate = self.elman_net(torch.cat([e_t, h], -1))          
             # Update valid positions; retain the old state at padding positions.
             # (..., 1)            
             valid = x[..., t].ne(self.embedding.padding_idx).unsqueeze(-1)  
